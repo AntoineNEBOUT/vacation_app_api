@@ -5,15 +5,18 @@ import fr.antoinenebout.vacation_app_api.model.Vacation;
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
 
-@Mapper(componentModel = "spring", uses = {UserMapper.class})
+@Mapper(componentModel = "spring")
 public interface VacationMapper {
 
-    @Mapping(source = "user", target = "user")
-    @Mapping(source = "vacationType", target = "vacation_type")
+    @Mapping(source = "user.id", target = "user_id")
+    @Mapping(source = "vacationType.id", target = "vacation_type_id")
+    @Mapping(source = "state.id", target = "state_id")
     VacationDTO toDTO(Vacation vacation);
 
-    @Mapping(source = "user.id", target = "user.id")
-    @Mapping(source = "vacation_type", target = "vacationType")
+
+    @Mapping(source = "user_id", target = "user.id")
+    @Mapping(source = "vacation_type_id", target = "vacationType.id")
+    @Mapping(source = "state_id", target = "state.id")
     Vacation toEntity(VacationDTO dto);
 
 }

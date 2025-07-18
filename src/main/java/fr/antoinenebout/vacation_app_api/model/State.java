@@ -8,20 +8,17 @@ import java.util.List;
 
 @Data
 @Entity
-@Table(name = "vacationstypes")
-public class VacationType {
+@Table(name = "states")
+public class State {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
     @Column
-    private String vacation_name;
+    private String state_name;
 
-    @OneToMany(mappedBy = "vacationType")
-    private List<Counter> counters = new ArrayList<>();
-
-    @OneToMany(mappedBy = "vacationType")
+    @OneToMany(mappedBy = "state")
     private List<Vacation> vacations = new ArrayList<>();
 
 }

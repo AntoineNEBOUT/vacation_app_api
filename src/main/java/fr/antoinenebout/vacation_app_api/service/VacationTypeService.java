@@ -4,7 +4,6 @@ import fr.antoinenebout.vacation_app_api.dto.VacationTypeDTO;
 import fr.antoinenebout.vacation_app_api.mapper.VacationTypeMapper;
 import fr.antoinenebout.vacation_app_api.repository.VacationTypeRepository;
 import lombok.Data;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -13,10 +12,13 @@ import java.util.List;
 @Service
 public class VacationTypeService {
 
-    @Autowired
-    private VacationTypeRepository vacationTypeRepository;
-    @Autowired
-    private VacationTypeMapper vacationTypeMapper;
+    private final VacationTypeRepository vacationTypeRepository;
+    private final VacationTypeMapper vacationTypeMapper;
+
+    public VacationTypeService(VacationTypeRepository vacationTypeRepository, VacationTypeMapper vacationTypeMapper) {
+        this.vacationTypeRepository = vacationTypeRepository;
+        this.vacationTypeMapper = vacationTypeMapper;
+    }
 
     public List<VacationTypeDTO> getVacationTypes() {
         return vacationTypeRepository.findAll().stream().map(vacationTypeMapper::toDTO).toList();

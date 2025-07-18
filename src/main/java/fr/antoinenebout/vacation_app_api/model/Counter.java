@@ -3,12 +3,10 @@ package fr.antoinenebout.vacation_app_api.model;
 import jakarta.persistence.*;
 import lombok.Data;
 
-import java.util.Date;
-
 @Data
 @Entity
-@Table(name = "vacations")
-public class Vacation {
+@Table(name = "counters")
+public class Counter {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -22,17 +20,16 @@ public class Vacation {
     @JoinColumn(name = "vacation_type_id")
     private VacationType vacationType;
 
-    @ManyToOne
-    @JoinColumn(name = "state_id")
-    private State state;
+    @Column
+    private Long yearly_total;
 
     @Column
     private Long requested;
 
     @Column
-    private Date start_date;
+    private Long validated;
 
     @Column
-    private Date end_date;
+    private Long remaining;
 
 }

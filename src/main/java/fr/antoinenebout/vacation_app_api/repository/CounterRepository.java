@@ -1,16 +1,14 @@
 package fr.antoinenebout.vacation_app_api.repository;
 
-import fr.antoinenebout.vacation_app_api.model.User;
-
+import fr.antoinenebout.vacation_app_api.model.Counter;
 import org.springframework.data.repository.CrudRepository;
 import org.springframework.stereotype.Repository;
 
 import java.util.List;
 
 @Repository
-public interface UserRepository extends CrudRepository<User, Long> {
+public interface CounterRepository extends CrudRepository<Counter, Long> {
 
-    List<User> findAll();
+    List<Counter> findAll();
 
-    User findByEmail(String email);
 }

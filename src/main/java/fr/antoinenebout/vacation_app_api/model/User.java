@@ -1,6 +1,5 @@
 package fr.antoinenebout.vacation_app_api.model;
 
-import com.fasterxml.jackson.annotation.JsonManagedReference;
 import jakarta.persistence.*;
 import lombok.Data;
 
@@ -26,7 +25,13 @@ public class User {
     private String email;
 
     @Column
+    private String password;
+
+    @Column
     private String company_name;
+
+    @OneToMany(mappedBy = "user")
+    private List<Counter> counters = new ArrayList<>();
 
     @OneToMany(mappedBy = "user")
     private List<Vacation> vacations = new ArrayList<>();
