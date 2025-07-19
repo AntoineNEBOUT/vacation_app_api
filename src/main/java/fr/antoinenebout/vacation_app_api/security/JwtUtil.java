@@ -27,7 +27,6 @@ public class JwtUtil {
                 .setSubject(username)
                 .setIssuedAt(now)
                 .setExpiration(expiry)
-//                .signWith(SignatureAlgorithm.HS256, secret)
                 .signWith(getSigningKey(), SignatureAlgorithm.HS256)
                 .compact();
     }
@@ -43,12 +42,10 @@ public class JwtUtil {
 
     public boolean validateToken(String token) {
         try {
-//            Jwts.parser().setSigningKey(secret).parseClaimsJws(token);
             Jwts.parserBuilder()
                     .setSigningKey(getSigningKey())
                     .build()
                     .parseClaimsJws(token);
-            System.out.println("\nToken valide\n");
             return true;
         } catch (JwtException | IllegalArgumentException e) {
             return false;

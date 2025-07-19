@@ -1,6 +1,8 @@
 package fr.antoinenebout.vacation_app_api.service;
 
-import fr.antoinenebout.vacation_app_api.dto.VacationDTO;
+import fr.antoinenebout.vacation_app_api.dto.Vacation.VacationCreateDTO;
+import fr.antoinenebout.vacation_app_api.dto.Vacation.VacationDetailDTO;
+import fr.antoinenebout.vacation_app_api.dto.Vacation.VacationSummaryDTO;
 import fr.antoinenebout.vacation_app_api.mapper.VacationMapper;
 import fr.antoinenebout.vacation_app_api.model.State;
 import fr.antoinenebout.vacation_app_api.model.User;
@@ -39,27 +41,27 @@ public class VacationService {
         this.stateRepository = stateRepository;
     }
 
-    public List<VacationDTO> getVacations() {
-        return vacationRepository.findAll().stream().map(vacationMapper::toDTO).toList();
+    public List<VacationSummaryDTO> getVacations() {
+        return vacationRepository.findAll().stream().map(vacationMapper::toSummary).toList();
     }
 
-    public Optional<VacationDTO> getVacation(final Long id) {
-        return vacationRepository.findById(id).map(vacationMapper::toDTO);
+    public Optional<VacationDetailDTO> getVacation(final Long id) {
+        return vacationRepository.findById(id).map(vacationMapper::toDetail);
     }
 
-    public VacationDTO createVacation(VacationDTO vacationDTO) {
-        User user = userRepository.findById(vacationDTO.getUser_id()).orElseThrow(() -> new RuntimeException("User not found"));
-        VacationType vacationType = vacationTypeRepository.findById(vacationDTO.getVacation_type_id()).orElseThrow(() -> new RuntimeException("Type not found"));
-        State state = stateRepository.findById(vacationDTO.getState_id()).orElseThrow(() -> new RuntimeException("State not found"));
+    public VacationDetailDTO createVacation(VacationCreateDTO vacationCreateDTO) {
+        User user = userRepository.findById(vacationCreateDTO.getUser_id()).orElseThrow(() -> new RuntimeException("User not found"));
+        VacationType vacationType = vacationTypeRepository.findById(vacationCreateDTO.getVacation_type_id()).orElseThrow(() -> new RuntimeException("Type not found"));
+        State state = stateRepository.findById(vacationCreateDTO.getState_id()).orElseThrow(() -> new RuntimeException("State not found"));
 
-        Vacation vacation_entity = vacationMapper.toEntity(vacationDTO);
+        Vacation vacation_entity = vacationMapper.toEntity(vacationCreateDTO);
         vacation_entity.setUser(user);
         vacation_entity.setVacationType(vacationType);
         vacation_entity.setState(state);
 
         Vacation saved = vacationRepository.save(vacation_entity);
 
-        return vacationMapper.toDTO(saved);
+        return vacationMapper.toDetail(saved);
     }
 
 }

@@ -1,19 +1,25 @@
 package fr.antoinenebout.vacation_app_api.mapper;
 
-import fr.antoinenebout.vacation_app_api.dto.CounterDTO;
+import fr.antoinenebout.vacation_app_api.dto.Counter.CounterCreateDTO;
+import fr.antoinenebout.vacation_app_api.dto.Counter.CounterDetailDTO;
+import fr.antoinenebout.vacation_app_api.dto.Counter.CounterSummaryDTO;
+import fr.antoinenebout.vacation_app_api.dto.Counter.CounterUpdateDTO;
 import fr.antoinenebout.vacation_app_api.model.Counter;
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
 
-@Mapper(componentModel = "spring", uses = {UserMapper.class})
+@Mapper(componentModel = "spring", uses = {UserMapper.class, VacationMapper.class})
 public interface CounterMapper {
 
-    @Mapping(source = "user.id", target = "user_id")
-    @Mapping(source = "vacationType.id", target = "vacation_type_id")
-    CounterDTO toDTO(Counter counter);
+    @Mapping(source = "user.email", target = "username")
+    @Mapping(source = "vacationType.vacation_name", target = "type")
+    CounterSummaryDTO toSummary(Counter counter);
+
+    CounterDetailDTO toDetail(Counter counter);
 
     @Mapping(source = "user_id", target = "user.id")
     @Mapping(source = "vacation_type_id", target = "vacationType.id")
-    Counter toEntity(CounterDTO dto);
+    Counter toEntity(CounterCreateDTO dto);
+    Counter toEntity(CounterUpdateDTO dto);
 
 }

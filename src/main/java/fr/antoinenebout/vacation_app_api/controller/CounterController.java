@@ -1,6 +1,9 @@
 package fr.antoinenebout.vacation_app_api.controller;
 
-import fr.antoinenebout.vacation_app_api.dto.CounterDTO;
+import fr.antoinenebout.vacation_app_api.dto.Counter.CounterCreateDTO;
+import fr.antoinenebout.vacation_app_api.dto.Counter.CounterDetailDTO;
+import fr.antoinenebout.vacation_app_api.dto.Counter.CounterSummaryDTO;
+import fr.antoinenebout.vacation_app_api.dto.Counter.CounterUpdateDTO;
 import fr.antoinenebout.vacation_app_api.service.CounterService;
 import org.springframework.web.bind.annotation.*;
 
@@ -17,13 +20,23 @@ public class CounterController {
     }
 
     @GetMapping("")
-    public List<CounterDTO> getVacations() {
-        return counterService.getVacations();
+    public List<CounterSummaryDTO> getCounters() {
+        return counterService.getCounters();
+    }
+
+    @GetMapping("/{id}")
+    public CounterDetailDTO getCounter(@PathVariable("id") final Long id) {
+        return counterService.getCounter(id).orElse(null);
     }
 
     @PostMapping("")
-    public CounterDTO create(@RequestBody CounterDTO dto) {
-        return counterService.createVacation(dto);
+    public CounterDetailDTO create(@RequestBody CounterCreateDTO dto) {
+        return counterService.createCounter(dto);
+    }
+
+    @PatchMapping("/{id}")
+    public CounterDetailDTO patch(@PathVariable("id") final Long id, @RequestBody CounterUpdateDTO dto) {
+        return counterService.patchCounter(id, dto);
     }
 
 }
