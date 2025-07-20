@@ -26,7 +26,7 @@ public class CounterController {
 
     @GetMapping("/{id}")
     public CounterDetailDTO getCounter(@PathVariable("id") final Long id) {
-        return counterService.getCounter(id).orElse(null);
+        return counterService.getCounter(id);
     }
 
     @PostMapping("")

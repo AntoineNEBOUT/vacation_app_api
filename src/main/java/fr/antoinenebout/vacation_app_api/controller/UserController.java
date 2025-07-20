@@ -1,34 +1,42 @@
 package fr.antoinenebout.vacation_app_api.controller;
 
-import fr.antoinenebout.vacation_app_api.dto.UserDTO;
+import fr.antoinenebout.vacation_app_api.dto.User.UserCreateDTO;
+import fr.antoinenebout.vacation_app_api.dto.User.UserDetailDTO;
+import fr.antoinenebout.vacation_app_api.dto.User.UserUpdateDTO;
 import fr.antoinenebout.vacation_app_api.service.UserService;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import fr.antoinenebout.vacation_app_api.util.AuthUtil;
+import org.springframework.web.bind.annotation.*;
 
-import java.util.List;
 import java.util.Optional;
 
 @RestController
-@RequestMapping("/api/users")
+@RequestMapping("/api/user")
 public class UserController {
 
     private final UserService userService;
+    private final AuthUtil authUtil;
 
-    public UserController(UserService userService) {
+    public UserController(
+            UserService userService,
+            AuthUtil authUtil) {
         this.userService = userService;
-    }
-
-    @GetMapping("/{id}")
-    public UserDTO getUser(@PathVariable("id") final Long id) {
-        Optional<UserDTO> user = userService.getUser(id);
-        return user.orElse(null);
+        this.authUtil = authUtil;
     }
 
     @GetMapping("")
-    public List<UserDTO> getUsers() {
-        return userService.getUsers();
+    public UserDetailDTO getUser() {
+        Optional<UserDetailDTO> user = userService.getUser(authUtil.getCurrentUserId());
+        return user.orElse(null);
+    }
+
+    @PostMapping("/register")
+    public UserDetailDTO register(@RequestBody UserCreateDTO dto) {
+        return userService.createUser(dto);
+    }
+
+    @PatchMapping("")
+    public UserDetailDTO patchUser(@RequestBody UserUpdateDTO dto) {
+        return userService.patchUser(authUtil.getCurrentUserId(), dto);
     }
 
 }

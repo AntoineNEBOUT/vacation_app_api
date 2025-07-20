@@ -12,11 +12,13 @@ import fr.antoinenebout.vacation_app_api.repository.StateRepository;
 import fr.antoinenebout.vacation_app_api.repository.UserRepository;
 import fr.antoinenebout.vacation_app_api.repository.VacationRepository;
 import fr.antoinenebout.vacation_app_api.repository.VacationTypeRepository;
+import fr.antoinenebout.vacation_app_api.util.AuthUtil;
 import lombok.Data;
+import org.springframework.security.access.AccessDeniedException;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
-import java.util.Optional;
+import java.util.Objects;
 
 @Data
 @Service
@@ -27,30 +29,40 @@ public class VacationService {
     private final UserRepository userRepository;
     private final VacationTypeRepository vacationTypeRepository;
     private final StateRepository stateRepository;
+    private final AuthUtil authUtil;
 
     public VacationService(
             VacationRepository vacationRepository,
             VacationMapper vacationMapper,
             UserRepository userRepository,
             VacationTypeRepository vacationTypeRepository,
-            StateRepository stateRepository) {
+            StateRepository stateRepository,
+            AuthUtil authUtil) {
         this.vacationRepository = vacationRepository;
         this.vacationMapper = vacationMapper;
         this.userRepository = userRepository;
         this.vacationTypeRepository = vacationTypeRepository;
         this.stateRepository = stateRepository;
+        this.authUtil = authUtil;
     }
 
     public List<VacationSummaryDTO> getVacations() {
-        return vacationRepository.findAll().stream().map(vacationMapper::toSummary).toList();
+        User user = userRepository.findById(authUtil.getCurrentUserId()).orElseThrow(() -> new RuntimeException("User not found"));
+        return vacationRepository.findByUser(user).stream().map(vacationMapper::toSummary).toList();
     }
 
-    public Optional<VacationDetailDTO> getVacation(final Long id) {
-        return vacationRepository.findById(id).map(vacationMapper::toDetail);
+    public VacationDetailDTO getVacation(final Long id) {
+        Vacation vacation = vacationRepository.findById(id).orElseThrow(() -> new RuntimeException("Vacation not found"));
+
+        if(!Objects.equals(vacation.getUser().getId(), authUtil.getCurrentUserId())) {
+            throw new AccessDeniedException("You cannot access this ressource");
+        }
+
+        return vacationMapper.toDetail(vacation);
     }
 
     public VacationDetailDTO createVacation(VacationCreateDTO vacationCreateDTO) {
-        User user = userRepository.findById(vacationCreateDTO.getUser_id()).orElseThrow(() -> new RuntimeException("User not found"));
+        User user = userRepository.findById(authUtil.getCurrentUserId()).orElseThrow(() -> new RuntimeException("User not found"));
         VacationType vacationType = vacationTypeRepository.findById(vacationCreateDTO.getVacation_type_id()).orElseThrow(() -> new RuntimeException("Type not found"));
         State state = stateRepository.findById(vacationCreateDTO.getState_id()).orElseThrow(() -> new RuntimeException("State not found"));
 

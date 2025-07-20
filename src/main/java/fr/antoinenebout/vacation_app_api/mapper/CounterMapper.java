@@ -17,7 +17,6 @@ public interface CounterMapper {
 
     CounterDetailDTO toDetail(Counter counter);
 
-    @Mapping(source = "user_id", target = "user.id")
     @Mapping(source = "vacation_type_id", target = "vacationType.id")
     Counter toEntity(CounterCreateDTO dto);
     Counter toEntity(CounterUpdateDTO dto);

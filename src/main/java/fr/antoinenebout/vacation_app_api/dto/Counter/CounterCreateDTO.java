@@ -22,9 +22,6 @@ public class CounterCreateDTO {
 
 
 
-    @NotNull(message = "User_id value is required")
-    @Min(value = 1, message = "User_id value must be positive")
-    private Long user_id;
 
     @NotNull(message = "Vacation_type_id value is required")
     @Min(value = 1, message = "Vacation_type_id value must be positive")

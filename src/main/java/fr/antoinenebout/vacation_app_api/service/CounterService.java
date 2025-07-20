@@ -18,7 +18,6 @@ import org.springframework.stereotype.Service;
 
 import java.util.List;
 import java.util.Objects;
-import java.util.Optional;
 
 @Data
 @Service
@@ -44,15 +43,22 @@ public class CounterService {
     }
 
     public List<CounterSummaryDTO> getCounters() {
-        return counterRepository.findAll().stream().map(counterMapper::toSummary).toList();
+        User user = userRepository.findById(authUtil.getCurrentUserId()).orElseThrow(() -> new RuntimeException("User not found"));
+        return counterRepository.findByUser(user).stream().map(counterMapper::toSummary).toList();
     }
 
-    public Optional<CounterDetailDTO> getCounter(final Long id) {
-        return counterRepository.findById(id).map(counterMapper::toDetail);
+    public CounterDetailDTO getCounter(final Long id) {
+        Counter counter = counterRepository.findById(id).orElseThrow(() -> new RuntimeException("Counter not found"));
+
+        if(!Objects.equals(counter.getUser().getId(), authUtil.getCurrentUserId())) {
+            throw new AccessDeniedException("You cannot access this resource.");
+        }
+
+        return counterMapper.toDetail(counter);
     }
 
     public CounterDetailDTO createCounter(CounterCreateDTO dto) {
-        User user = userRepository.findById(dto.getUser_id()).orElseThrow(() -> new RuntimeException("User not found"));
+        User user = userRepository.findById(authUtil.getCurrentUserId()).orElseThrow(() -> new RuntimeException("User not found"));
         VacationType type = vacationTypeRepository.findById(dto.getVacation_type_id()).orElseThrow(() -> new RuntimeException("Type not found"));
         final Long requested = dto.getRequested() != null ? dto.getRequested() : 0L;
         final Long validated = dto.getValidated() != null ? dto.getValidated() : 0L;
@@ -72,7 +78,7 @@ public class CounterService {
         Counter counter = counterRepository.findById(id).orElseThrow(() -> new RuntimeException("Counter not found"));
 
         if(!Objects.equals(counter.getUser().getId(), authUtil.getCurrentUserId())) {
-            throw new AccessDeniedException("Vous ne pouvez pas modifier cette ressource.");
+            throw new AccessDeniedException("You cannot modify this resource.");
         }
 
         if(dto.getYearly_total() != null) {

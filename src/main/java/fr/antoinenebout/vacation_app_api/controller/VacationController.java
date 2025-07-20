@@ -21,8 +21,8 @@ public class VacationController {
 
     @GetMapping("/{id}")
     public VacationDetailDTO getVacation(@PathVariable("id") final Long id) {
-        Optional<VacationDetailDTO> vacationDTO = vacationService.getVacation(id);
-        return vacationDTO.orElse(null);
+        VacationDetailDTO vacationDTO = vacationService.getVacation(id);
+        return vacationDTO;
     }
 
     @GetMapping("")

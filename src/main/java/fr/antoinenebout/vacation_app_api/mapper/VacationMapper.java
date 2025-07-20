@@ -18,7 +18,6 @@ public interface VacationMapper {
 
     VacationDetailDTO toDetail(Vacation vacation);
 
-    @Mapping(source = "user_id", target = "user.id")
     @Mapping(source = "vacation_type_id", target = "vacationType.id")
     @Mapping(source = "state_id", target = "state.id")
     Vacation toEntity(VacationCreateDTO dto);
