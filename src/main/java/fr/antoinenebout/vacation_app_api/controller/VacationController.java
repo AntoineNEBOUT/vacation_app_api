@@ -3,11 +3,11 @@ package fr.antoinenebout.vacation_app_api.controller;
 import fr.antoinenebout.vacation_app_api.dto.Vacation.VacationCreateDTO;
 import fr.antoinenebout.vacation_app_api.dto.Vacation.VacationDetailDTO;
 import fr.antoinenebout.vacation_app_api.dto.Vacation.VacationSummaryDTO;
+import fr.antoinenebout.vacation_app_api.dto.Vacation.VacationUpdateDTO;
 import fr.antoinenebout.vacation_app_api.service.VacationService;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
-import java.util.Optional;
 
 @RestController
 @RequestMapping("/api/vacations")
@@ -21,8 +21,7 @@ public class VacationController {
 
     @GetMapping("/{id}")
     public VacationDetailDTO getVacation(@PathVariable("id") final Long id) {
-        VacationDetailDTO vacationDTO = vacationService.getVacation(id);
-        return vacationDTO;
+        return vacationService.getVacation(id);
     }
 
     @GetMapping("")
@@ -31,8 +30,18 @@ public class VacationController {
     }
 
     @PostMapping("")
-    public VacationDetailDTO createVacation(@RequestBody VacationCreateDTO vacationCreateDTO) {
+    public VacationDetailDTO create(@RequestBody VacationCreateDTO vacationCreateDTO) {
         return vacationService.createVacation(vacationCreateDTO);
+    }
+
+    @PatchMapping("/{id}")
+    public VacationDetailDTO patch(@PathVariable("id") final Long id, @RequestBody VacationUpdateDTO vacationUpdateDTO) {
+        return vacationService.patchVacation(id, vacationUpdateDTO);
+    }
+
+    @DeleteMapping("/{id}")
+    public VacationDetailDTO delete(@PathVariable("id") final Long id) {
+        return vacationService.deleteVacation(id);
     }
 
 }

@@ -1,7 +1,7 @@
 package fr.antoinenebout.vacation_app_api.dto.Counter;
 
 import fr.antoinenebout.vacation_app_api.dto.User.UserDetailDTO;
-import fr.antoinenebout.vacation_app_api.dto.VacationTypeDTO;
+import fr.antoinenebout.vacation_app_api.dto.VacationType.VacationTypeDetailDTO;
 import lombok.Data;
 
 @Data
@@ -14,6 +14,6 @@ public class CounterDetailDTO {
     private Long remaining;
 
     private UserDetailDTO user;
-    private VacationTypeDTO vacationType;
+    private VacationTypeDetailDTO vacationType;
 
 }

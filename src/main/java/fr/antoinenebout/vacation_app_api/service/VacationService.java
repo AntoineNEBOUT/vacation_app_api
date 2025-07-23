@@ -3,6 +3,7 @@ package fr.antoinenebout.vacation_app_api.service;
 import fr.antoinenebout.vacation_app_api.dto.Vacation.VacationCreateDTO;
 import fr.antoinenebout.vacation_app_api.dto.Vacation.VacationDetailDTO;
 import fr.antoinenebout.vacation_app_api.dto.Vacation.VacationSummaryDTO;
+import fr.antoinenebout.vacation_app_api.dto.Vacation.VacationUpdateDTO;
 import fr.antoinenebout.vacation_app_api.mapper.VacationMapper;
 import fr.antoinenebout.vacation_app_api.model.State;
 import fr.antoinenebout.vacation_app_api.model.User;
@@ -55,7 +56,7 @@ public class VacationService {
         Vacation vacation = vacationRepository.findById(id).orElseThrow(() -> new RuntimeException("Vacation not found"));
 
         if(!Objects.equals(vacation.getUser().getId(), authUtil.getCurrentUserId())) {
-            throw new AccessDeniedException("You cannot access this ressource");
+            throw new AccessDeniedException("You cannot access this resource");
         }
 
         return vacationMapper.toDetail(vacation);
@@ -74,6 +75,52 @@ public class VacationService {
         Vacation saved = vacationRepository.save(vacation_entity);
 
         return vacationMapper.toDetail(saved);
+    }
+
+    public VacationDetailDTO patchVacation(Long id, VacationUpdateDTO vacationUpdateDTO) {
+        Vacation vacation_entity = vacationRepository.findById(id).orElseThrow(() -> new RuntimeException("Vacation not found"));
+
+        if(!Objects.equals(vacation_entity.getUser().getId(), authUtil.getCurrentUserId())) {
+            throw new AccessDeniedException("You cannot modify this resource");
+        }
+
+        if(vacationUpdateDTO.getRequested() != null) {
+            vacation_entity.setRequested(vacationUpdateDTO.getRequested());
+        }
+
+        if(vacationUpdateDTO.getStart_date() != null) {
+            vacation_entity.setStart_date(vacationUpdateDTO.getStart_date());
+        }
+
+        if(vacationUpdateDTO.getEnd_date() != null) {
+            vacation_entity.setEnd_date(vacationUpdateDTO.getEnd_date());
+        }
+
+        if(vacationUpdateDTO.getVacation_type_id() != null) {
+            VacationType vacationType = vacationTypeRepository.findById(vacationUpdateDTO.getVacation_type_id()).orElseThrow(() -> new RuntimeException("Type not found"));
+            vacation_entity.setVacationType(vacationType);
+        }
+
+        if(vacationUpdateDTO.getState_id() != null) {
+            State state = stateRepository.findById(vacationUpdateDTO.getState_id()).orElseThrow(() -> new RuntimeException("State not found"));
+            vacation_entity.setState(state);
+        }
+
+        Vacation updated = vacationRepository.save(vacation_entity);
+
+        return vacationMapper.toDetail(updated);
+    }
+
+    public VacationDetailDTO deleteVacation(Long id) {
+        Vacation vacation = vacationRepository.findById(id).orElseThrow(() -> new RuntimeException("Vacation not found"));
+
+        if(!Objects.equals(vacation.getUser().getId(), authUtil.getCurrentUserId())) {
+            throw new AccessDeniedException("You cannot delete this resource");
+        }
+
+        vacationRepository.delete(vacation);
+
+        return vacationMapper.toDetail(vacation);
     }
 
 }

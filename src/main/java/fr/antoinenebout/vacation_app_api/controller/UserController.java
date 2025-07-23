@@ -35,7 +35,7 @@ public class UserController {
     }
 
     @PatchMapping("")
-    public UserDetailDTO patchUser(@RequestBody UserUpdateDTO dto) {
+    public UserDetailDTO patch(@RequestBody UserUpdateDTO dto) {
         return userService.patchUser(authUtil.getCurrentUserId(), dto);
     }
 

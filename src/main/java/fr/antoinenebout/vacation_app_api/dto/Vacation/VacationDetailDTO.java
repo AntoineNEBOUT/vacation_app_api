@@ -2,7 +2,7 @@ package fr.antoinenebout.vacation_app_api.dto.Vacation;
 
 import fr.antoinenebout.vacation_app_api.dto.StateDTO;
 import fr.antoinenebout.vacation_app_api.dto.User.UserDetailDTO;
-import fr.antoinenebout.vacation_app_api.dto.VacationTypeDTO;
+import fr.antoinenebout.vacation_app_api.dto.VacationType.VacationTypeDetailDTO;
 import lombok.Data;
 
 import java.util.Date;
@@ -16,7 +16,7 @@ public class VacationDetailDTO {
     private Date end_date;
 
     private UserDetailDTO user;
-    private VacationTypeDTO vacationType;
+    private VacationTypeDetailDTO vacationType;
     private StateDTO state;
 
 }

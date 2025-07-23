@@ -107,4 +107,16 @@ public class CounterService {
 
     }
 
+    public CounterDetailDTO deleteCounter(Long id) {
+        Counter counter = counterRepository.findById(id).orElseThrow(() -> new RuntimeException("Counter not found"));
+
+        if(!Objects.equals(counter.getUser().getId(), authUtil.getCurrentUserId())) {
+            throw new AccessDeniedException("You cannot delete this resource");
+        }
+
+        counterRepository.delete(counter);
+
+        return counterMapper.toDetail(counter);
+    }
+
 }

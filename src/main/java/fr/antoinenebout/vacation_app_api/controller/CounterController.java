@@ -39,4 +39,9 @@ public class CounterController {
         return counterService.patchCounter(id, dto);
     }
 
+    @DeleteMapping("/{id}")
+    public CounterDetailDTO delete(@PathVariable("id") final Long id) {
+        return counterService.deleteCounter(id);
+    }
+
 }
