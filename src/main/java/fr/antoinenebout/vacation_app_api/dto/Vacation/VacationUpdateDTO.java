@@ -11,15 +11,12 @@ public class VacationUpdateDTO {
     @Min(value = 1, message = "Requested value must be greater than 1")
     private Long requested;
 
-    private Date start_date;
-    private Date end_date;
-
-
 
     @Min(value = 1, message = "Vacation_type_id value must be greater than 1")
     private Long vacation_type_id;
 
-    @Min(value = 1, message = "State_id value must be greater than 1")
-    private Long state_id;
+    @Min(value = 1, message = "Vacation_group_id value must be greater than 1")
+    private Long vacation_group_id;
+
 
 }

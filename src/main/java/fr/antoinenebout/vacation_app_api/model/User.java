@@ -34,5 +34,5 @@ public class User {
     private List<Counter> counters = new ArrayList<>();
 
     @OneToMany(mappedBy = "user")
-    private List<Vacation> vacations = new ArrayList<>();
+    private List<VacationGroup> vacationGroups = new ArrayList<>();
 }

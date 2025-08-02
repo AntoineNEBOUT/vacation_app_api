@@ -9,11 +9,8 @@ public class VacationSummaryDTO {
 
     private Long id;
     private Long requested;
-    private Date start_date;
-    private Date end_date;
 
-    private String username;
     private String type;
-    private String state_name;
+    private String group;
 
 }

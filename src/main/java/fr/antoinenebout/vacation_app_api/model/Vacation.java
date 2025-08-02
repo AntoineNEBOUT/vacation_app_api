@@ -15,24 +15,14 @@ public class Vacation {
     private Long id;
 
     @ManyToOne
-    @JoinColumn(name = "user_id")
-    private User user;
-
-    @ManyToOne
     @JoinColumn(name = "vacation_type_id")
     private VacationType vacationType;
 
     @ManyToOne
-    @JoinColumn(name = "state_id")
-    private State state;
+    @JoinColumn(name = "vacation_group_id")
+    private VacationGroup vacationGroup;
 
     @Column
     private Long requested;
-
-    @Column
-    private Date start_date;
-
-    @Column
-    private Date end_date;
 
 }

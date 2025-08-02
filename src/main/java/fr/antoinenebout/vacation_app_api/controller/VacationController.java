@@ -24,11 +24,6 @@ public class VacationController {
         return vacationService.getVacation(id);
     }
 
-    @GetMapping("")
-    public List<VacationSummaryDTO> getVacations() {
-        return vacationService.getVacations();
-    }
-
     @PostMapping("")
     public VacationDetailDTO create(@RequestBody VacationCreateDTO vacationCreateDTO) {
         return vacationService.createVacation(vacationCreateDTO);

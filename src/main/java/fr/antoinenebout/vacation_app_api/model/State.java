@@ -19,6 +19,6 @@ public class State {
     private String state_name;
 
     @OneToMany(mappedBy = "state")
-    private List<Vacation> vacations = new ArrayList<>();
+    private List<VacationGroup> vacationGroups = new ArrayList<>();
 
 }
