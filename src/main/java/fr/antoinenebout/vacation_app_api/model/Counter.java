@@ -21,15 +21,18 @@ public class Counter {
     private VacationType vacationType;
 
     @Column
-    private Long yearly_total;
+    private Double yearly_total;
 
     @Column
-    private Long requested;
+    private Double requested;
 
     @Column
-    private Long validated;
+    private Double validated;
 
     @Column
-    private Long remaining;
+    private Double remaining;
+
+    @Column
+    private Double estimated;
 
 }

@@ -8,10 +8,11 @@ import lombok.Data;
 public class CounterDetailDTO {
 
     private Long id;
-    private Long yearly_total;
-    private Long requested;
-    private Long validated;
-    private Long remaining;
+    private Double yearly_total;
+    private Double requested;
+    private Double validated;
+    private Double remaining;
+    private Double estimated;
 
     private UserDetailDTO user;
     private VacationTypeDetailDTO vacationType;

@@ -60,9 +60,9 @@ public class CounterService {
     public CounterDetailDTO createCounter(CounterCreateDTO dto) {
         User user = userRepository.findById(authUtil.getCurrentUserId()).orElseThrow(() -> new RuntimeException("User not found"));
         VacationType type = vacationTypeRepository.findById(dto.getVacation_type_id()).orElseThrow(() -> new RuntimeException("Type not found"));
-        final Long requested = dto.getRequested() != null ? dto.getRequested() : 0L;
-        final Long validated = dto.getValidated() != null ? dto.getValidated() : 0L;
-        final Long remaining = dto.getValidated() != null ? dto.getRemaining() : dto.getYearly_total();
+        final Double requested = dto.getRequested() != null ? dto.getRequested() : 0D;
+        final Double validated = dto.getValidated() != null ? dto.getValidated() : 0D;
+        final Double remaining = dto.getValidated() != null ? dto.getRemaining() : dto.getYearly_total();
 
         Counter counter_entity = counterMapper.toEntity(dto);
         counter_entity.setUser(user);

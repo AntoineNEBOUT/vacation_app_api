@@ -1,8 +1,10 @@
 package fr.antoinenebout.vacation_app_api.dto.VacationGroup;
 
+import fr.antoinenebout.vacation_app_api.dto.Vacation.VacationSummaryDTO;
 import lombok.Data;
 
 import java.util.Date;
+import java.util.List;
 
 @Data
 public class VacationGroupSummaryDTO {
@@ -14,5 +16,7 @@ public class VacationGroupSummaryDTO {
 
     private String username;
     private String state_name;
+
+    private List<VacationSummaryDTO> vacations;
 
 }

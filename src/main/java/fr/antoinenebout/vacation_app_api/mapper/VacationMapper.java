@@ -9,7 +9,7 @@ import fr.antoinenebout.vacation_app_api.model.VacationGroup;
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
 
-@Mapper(componentModel = "spring", uses = {VacationGroupMapper.class, VacationMapper.class})
+@Mapper(componentModel = "spring", uses = {VacationMapper.class})
 public interface VacationMapper {
 
     @Mapping(source = "vacationType.vacation_name", target = "type")

@@ -6,10 +6,11 @@ import lombok.Data;
 public class CounterSummaryDTO {
 
     private Long id;
-    private Long yearly_total;
-    private Long requested;
-    private Long validated;
-    private Long remaining;
+    private Double yearly_total;
+    private Double requested;
+    private Double validated;
+    private Double remaining;
+    private Double estimated;
 
     private String username;
     private String type;

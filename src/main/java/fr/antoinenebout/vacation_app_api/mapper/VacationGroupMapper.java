@@ -13,6 +13,7 @@ public interface VacationGroupMapper {
 
     @Mapping(source = "user.email", target = "username")
     @Mapping(source = "state.state_name", target = "state_name")
+    @Mapping(source = "vacations", target = "vacations")
     VacationGroupSummaryDTO toSummary(VacationGroup vacationGroup);
 
     VacationGroupDetailDTO toDetail(VacationGroup vacationGroup);

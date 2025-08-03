@@ -9,16 +9,19 @@ public class CounterCreateDTO {
 
     @NotNull(message = "The total value is required")
     @Min(value = 0, message = "The total must be positive")
-    private Long yearly_total;
+    private Double yearly_total;
 
     @Min(value = 0, message = "The requested value must be positive")
-    private Long requested;
+    private Double requested;
 
     @Min(value = 0, message = "The validated value must be positive")
-    private Long validated;
+    private Double validated;
 
     @Min(value = 0, message = "The remaining value must be positive")
-    private Long remaining;
+    private Double remaining;
+
+    @Min(value = 0, message = "The remaining value must be positive")
+    private Double estimated;
 
 
 

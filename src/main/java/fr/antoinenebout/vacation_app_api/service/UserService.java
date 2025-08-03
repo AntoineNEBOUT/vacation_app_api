@@ -79,7 +79,7 @@ public class UserService {
         }
 
         if(dto.getCompany_name() != null) {
-            user_entity.setEmail(dto.getEmail());
+            user_entity.setCompany_name(dto.getCompany_name());
         }
 
         User updated = userRepository.save(user_entity);
