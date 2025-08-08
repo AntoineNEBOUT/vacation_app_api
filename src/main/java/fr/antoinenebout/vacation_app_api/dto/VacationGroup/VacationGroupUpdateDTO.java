@@ -1,9 +1,11 @@
 package fr.antoinenebout.vacation_app_api.dto.VacationGroup;
 
+import fr.antoinenebout.vacation_app_api.dto.Vacation.VacationUpdateDTO;
 import jakarta.validation.constraints.Min;
 import lombok.Data;
 
 import java.util.Date;
+import java.util.List;
 
 @Data
 public class VacationGroupUpdateDTO {
@@ -16,5 +18,7 @@ public class VacationGroupUpdateDTO {
 
     @Min(value = 1, message = "State_id value must be greater than 1")
     private Long state_id;
+
+    private List<VacationUpdateDTO> vacations;
 
 }

@@ -5,12 +5,8 @@ import fr.antoinenebout.vacation_app_api.dto.Counter.CounterDetailDTO;
 import fr.antoinenebout.vacation_app_api.dto.Counter.CounterSummaryDTO;
 import fr.antoinenebout.vacation_app_api.dto.Counter.CounterUpdateDTO;
 import fr.antoinenebout.vacation_app_api.mapper.CounterMapper;
-import fr.antoinenebout.vacation_app_api.model.Counter;
-import fr.antoinenebout.vacation_app_api.model.User;
-import fr.antoinenebout.vacation_app_api.model.VacationType;
-import fr.antoinenebout.vacation_app_api.repository.UserRepository;
-import fr.antoinenebout.vacation_app_api.repository.CounterRepository;
-import fr.antoinenebout.vacation_app_api.repository.VacationTypeRepository;
+import fr.antoinenebout.vacation_app_api.model.*;
+import fr.antoinenebout.vacation_app_api.repository.*;
 import fr.antoinenebout.vacation_app_api.util.AuthUtil;
 import lombok.Data;
 import org.springframework.security.access.AccessDeniedException;
@@ -26,6 +22,7 @@ public class CounterService {
     private final CounterRepository counterRepository;
     private final UserRepository userRepository;
     private final VacationTypeRepository vacationTypeRepository;
+    private final VacationGroupRepository vacationGroupRepository;
     private final CounterMapper counterMapper;
     private final AuthUtil authUtil;
 
@@ -33,11 +30,13 @@ public class CounterService {
             CounterRepository counterRepository,
             UserRepository userRepository,
             VacationTypeRepository vacationTypeRepository,
+            VacationGroupRepository vacationGroupRepository,
             CounterMapper counterMapper,
             AuthUtil authUtil) {
         this.counterRepository = counterRepository;
         this.userRepository = userRepository;
         this.vacationTypeRepository = vacationTypeRepository;
+        this.vacationGroupRepository = vacationGroupRepository;
         this.counterMapper = counterMapper;
         this.authUtil = authUtil;
     }
@@ -60,6 +59,7 @@ public class CounterService {
     public CounterDetailDTO createCounter(CounterCreateDTO dto) {
         User user = userRepository.findById(authUtil.getCurrentUserId()).orElseThrow(() -> new RuntimeException("User not found"));
         VacationType type = vacationTypeRepository.findById(dto.getVacation_type_id()).orElseThrow(() -> new RuntimeException("Type not found"));
+        final Double estimated = dto.getEstimated() != null ? dto.getEstimated() : 0D;
         final Double requested = dto.getRequested() != null ? dto.getRequested() : 0D;
         final Double validated = dto.getValidated() != null ? dto.getValidated() : 0D;
         final Double remaining = dto.getValidated() != null ? dto.getRemaining() : dto.getYearly_total();
@@ -67,6 +67,7 @@ public class CounterService {
         Counter counter_entity = counterMapper.toEntity(dto);
         counter_entity.setUser(user);
         counter_entity.setVacationType(type);
+        counter_entity.setEstimated(estimated);
         counter_entity.setRequested(requested);
         counter_entity.setValidated(validated);
         counter_entity.setRemaining(remaining);
@@ -83,6 +84,8 @@ public class CounterService {
 
         if(dto.getYearly_total() != null) {
             counter.setYearly_total(dto.getYearly_total());
+
+            counter.setRemaining(counter.getYearly_total() - counter.getValidated());
         }
 
         if(dto.getRequested() != null) {
@@ -117,6 +120,44 @@ public class CounterService {
         counterRepository.delete(counter);
 
         return counterMapper.toDetail(counter);
+    }
+
+    public void refreshCounters() {
+        User user = userRepository.findById(authUtil.getCurrentUserId()).orElseThrow(() -> new RuntimeException("User not found"));
+
+        List<Counter> counters = user.getCounters();
+
+        for(Counter counter : counters) {
+            counter.setEstimated(0D);
+            counter.setRequested(0D);
+            counter.setValidated(0D);
+
+            for(VacationGroup vacationGroup : user.getVacationGroups()) {
+                for(Vacation vacation : vacationGroup.getVacations()) {
+                    if(Objects.equals(vacation.getVacationType().getId(), counter.getVacationType().getId())) {
+                        switch (vacationGroup.getState().getId().intValue()) {
+                            case 1:
+                                counter.setEstimated(counter.getEstimated() + vacation.getRequested());
+                                break;
+                            case 2:
+                                counter.setEstimated(counter.getEstimated() + vacation.getRequested());
+                                counter.setRequested(counter.getRequested() + vacation.getRequested());
+                                break;
+                            case 3:
+                                counter.setEstimated(counter.getEstimated() + vacation.getRequested());
+                                counter.setRequested(counter.getRequested() + vacation.getRequested());
+                                counter.setValidated(counter.getValidated() + vacation.getRequested());
+                                break;
+                        }
+                    }
+                }
+            }
+            counter.setRemaining(counter.getYearly_total() - counter.getValidated());
+
+        }
+
+        counterRepository.saveAll(counters);
+
     }
 
 }

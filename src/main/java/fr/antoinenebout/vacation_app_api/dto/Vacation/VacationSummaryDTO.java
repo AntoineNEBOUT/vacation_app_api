@@ -8,7 +8,7 @@ import java.util.Date;
 public class VacationSummaryDTO {
 
     private Long id;
-    private Long requested;
+    private Double requested;
 
     private String type;
     private String group;

@@ -1,16 +1,13 @@
 package fr.antoinenebout.vacation_app_api.service;
 
+import fr.antoinenebout.vacation_app_api.dto.Vacation.VacationUpdateDTO;
 import fr.antoinenebout.vacation_app_api.dto.VacationGroup.VacationGroupCreateDTO;
 import fr.antoinenebout.vacation_app_api.dto.VacationGroup.VacationGroupDetailDTO;
 import fr.antoinenebout.vacation_app_api.dto.VacationGroup.VacationGroupSummaryDTO;
 import fr.antoinenebout.vacation_app_api.dto.VacationGroup.VacationGroupUpdateDTO;
 import fr.antoinenebout.vacation_app_api.mapper.VacationGroupMapper;
-import fr.antoinenebout.vacation_app_api.model.State;
-import fr.antoinenebout.vacation_app_api.model.User;
-import fr.antoinenebout.vacation_app_api.model.VacationGroup;
-import fr.antoinenebout.vacation_app_api.repository.StateRepository;
-import fr.antoinenebout.vacation_app_api.repository.UserRepository;
-import fr.antoinenebout.vacation_app_api.repository.VacationGroupRepository;
+import fr.antoinenebout.vacation_app_api.model.*;
+import fr.antoinenebout.vacation_app_api.repository.*;
 import fr.antoinenebout.vacation_app_api.util.AuthUtil;
 import lombok.Data;
 import org.springframework.security.access.AccessDeniedException;
@@ -27,6 +24,9 @@ public class VacationGroupService {
     private final VacationGroupMapper vacationGroupMapper;
     private final UserRepository userRepository;
     private final StateRepository stateRepository;
+    private final VacationRepository vacationRepository;
+    private final VacationTypeRepository vacationTypeRepository;
+    private final CounterService counterService;
     private final AuthUtil authUtil;
 
     public VacationGroupService(
@@ -34,12 +34,18 @@ public class VacationGroupService {
             VacationGroupMapper vacationGroupMapper,
             UserRepository userRepository,
             StateRepository stateRepository,
+            VacationRepository vacationRepository,
+            VacationTypeRepository vacationTypeRepository,
+            CounterService counterService,
             AuthUtil authUtil
     ) {
         this.vacationGroupRepository = vacationGroupRepository;
         this.vacationGroupMapper = vacationGroupMapper;
         this.userRepository = userRepository;
         this.stateRepository = stateRepository;
+        this.vacationRepository = vacationRepository;
+        this.vacationTypeRepository = vacationTypeRepository;
+        this.counterService = counterService;
         this.authUtil = authUtil;
     }
 
@@ -62,6 +68,8 @@ public class VacationGroupService {
         vacationGroup_entity.setState(state);
 
         VacationGroup saved = vacationGroupRepository.save(vacationGroup_entity);
+
+        counterService.refreshCounters();
 
         return vacationGroupMapper.toDetail(saved);
     }
@@ -90,7 +98,20 @@ public class VacationGroupService {
             vacationGroup_entity.setState(state);
         }
 
+        if(vacationGroupUpdateDTO.getVacations() != null) {
+            for(VacationUpdateDTO vacationUpdateDTO : vacationGroupUpdateDTO.getVacations()) {
+                for(Vacation vacation : vacationGroup_entity.getVacations()) {
+                    if(Objects.equals(vacation.getVacationType().getId(), vacationUpdateDTO.getVacation_type_id())) {
+                        vacation.setRequested(vacationUpdateDTO.getRequested());
+                        vacationRepository.save(vacation);
+                    }
+                }
+            }
+        }
+
         VacationGroup updated = vacationGroupRepository.save(vacationGroup_entity);
+
+        counterService.refreshCounters();
 
         return vacationGroupMapper.toDetail(updated);
     }
@@ -102,7 +123,11 @@ public class VacationGroupService {
             throw new AccessDeniedException("You cannot modify this resource");
         }
 
+        vacationRepository.deleteAll(vacationGroup.getVacations());
+
         vacationGroupRepository.delete(vacationGroup);
+
+        counterService.refreshCounters();
 
         return vacationGroupMapper.toDetail(vacationGroup);
     }

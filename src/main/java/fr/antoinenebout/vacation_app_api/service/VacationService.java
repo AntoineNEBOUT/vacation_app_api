@@ -2,7 +2,6 @@ package fr.antoinenebout.vacation_app_api.service;
 
 import fr.antoinenebout.vacation_app_api.dto.Vacation.VacationCreateDTO;
 import fr.antoinenebout.vacation_app_api.dto.Vacation.VacationDetailDTO;
-import fr.antoinenebout.vacation_app_api.dto.Vacation.VacationSummaryDTO;
 import fr.antoinenebout.vacation_app_api.dto.Vacation.VacationUpdateDTO;
 import fr.antoinenebout.vacation_app_api.mapper.VacationMapper;
 import fr.antoinenebout.vacation_app_api.model.*;
@@ -12,7 +11,6 @@ import lombok.Data;
 import org.springframework.security.access.AccessDeniedException;
 import org.springframework.stereotype.Service;
 
-import java.util.List;
 import java.util.Objects;
 
 @Data

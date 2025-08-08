@@ -8,8 +8,8 @@ import java.util.Date;
 @Data
 public class VacationUpdateDTO {
 
-    @Min(value = 1, message = "Requested value must be greater than 1")
-    private Long requested;
+    @Min(value = 0, message = "Requested value must be greater than 0")
+    private Double requested;
 
 
     @Min(value = 1, message = "Vacation_type_id value must be greater than 1")

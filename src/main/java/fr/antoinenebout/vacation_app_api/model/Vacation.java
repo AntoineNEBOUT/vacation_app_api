@@ -23,6 +23,6 @@ public class Vacation {
     private VacationGroup vacationGroup;
 
     @Column
-    private Long requested;
+    private Double requested;
 
 }

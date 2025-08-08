@@ -12,7 +12,7 @@ import java.util.Date;
 public class VacationDetailDTO {
 
     private Long id;
-    private Long requested;
+    private Double requested;
 
     private VacationTypeDetailDTO vacationType;
     private VacationGroupDetailDTO vacationGroup;

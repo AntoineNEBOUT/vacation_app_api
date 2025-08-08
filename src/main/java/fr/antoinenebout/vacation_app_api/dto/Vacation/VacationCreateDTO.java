@@ -11,7 +11,7 @@ public class VacationCreateDTO {
 
     @NotNull(message = "Request value is required")
     @Min(value = 1, message = "Requested value must be greater than 1")
-    private Long requested;
+    private Double requested;
 
 
     @NotNull(message = "Vacation_type_id value is required")

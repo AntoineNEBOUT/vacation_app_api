@@ -1,5 +1,6 @@
 package fr.antoinenebout.vacation_app_api.repository;
 
+import fr.antoinenebout.vacation_app_api.model.State;
 import fr.antoinenebout.vacation_app_api.model.User;
 import fr.antoinenebout.vacation_app_api.model.Vacation;
 import fr.antoinenebout.vacation_app_api.model.VacationGroup;
@@ -14,4 +15,6 @@ public interface VacationGroupRepository extends JpaRepository<VacationGroup, Lo
     List<VacationGroup> findAll();
 
     List<VacationGroup> findByUser(User user);
+
+    List<VacationGroup> findByUserAndState(User user, State state);
 }
