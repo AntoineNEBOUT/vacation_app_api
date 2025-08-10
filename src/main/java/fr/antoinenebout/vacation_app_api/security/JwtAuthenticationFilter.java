@@ -3,6 +3,7 @@ package fr.antoinenebout.vacation_app_api.security;
 import fr.antoinenebout.vacation_app_api.service.UserDetailsServiceImpl;
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
+import jakarta.servlet.http.Cookie;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
@@ -28,8 +29,19 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
 
     @Override
     protected void doFilterInternal(HttpServletRequest req, HttpServletResponse res, FilterChain chain) throws ServletException, IOException {
+        String token = null;
+
         String authHeader = req.getHeader("Authorization");
-        String token = (StringUtils.hasText(authHeader) && authHeader.startsWith("Bearer ")) ? authHeader.substring(7) : null;
+        if(StringUtils.hasText(authHeader) && authHeader.startsWith("Bearer ")) {
+            token = authHeader.substring(7);
+        } else if(req.getCookies() != null) {
+            for (Cookie cookie : req.getCookies()) {
+                if("ACCESS_TOKEN".equals(cookie.getName())) {
+                    token = cookie.getValue();
+                    break;
+                }
+            }
+        }
 
         if(token != null && jwtUtil.validateToken(token)) {
             String username = jwtUtil.extractUsername(token);
