@@ -4,8 +4,12 @@ import fr.antoinenebout.vacation_app_api.dto.User.UserCreateDTO;
 import fr.antoinenebout.vacation_app_api.dto.User.UserDetailDTO;
 import fr.antoinenebout.vacation_app_api.dto.User.UserUpdateDTO;
 import fr.antoinenebout.vacation_app_api.mapper.UserMapper;
+import fr.antoinenebout.vacation_app_api.model.Counter;
 import fr.antoinenebout.vacation_app_api.model.User;
+import fr.antoinenebout.vacation_app_api.model.VacationType;
+import fr.antoinenebout.vacation_app_api.repository.CounterRepository;
 import fr.antoinenebout.vacation_app_api.repository.UserRepository;
+import fr.antoinenebout.vacation_app_api.repository.VacationTypeRepository;
 import fr.antoinenebout.vacation_app_api.util.AuthUtil;
 import lombok.Data;
 import org.springframework.http.HttpStatus;
@@ -25,16 +29,22 @@ public class UserService {
     private final UserRepository userRepository;
     private final UserMapper userMapper;
     private final PasswordEncoder passwordEncoder;
+    private final VacationTypeRepository vacationTypeRepository;
+    private final CounterRepository counterRepository;
     private final AuthUtil authUtil;
 
     public UserService(
             UserRepository userRepository,
             UserMapper userMapper,
             PasswordEncoder passwordEncoder,
+            VacationTypeRepository vacationTypeRepository,
+            CounterRepository counterRepository,
             AuthUtil authUtil) {
         this.userRepository = userRepository;
         this.userMapper = userMapper;
         this.passwordEncoder = passwordEncoder;
+        this.vacationTypeRepository = vacationTypeRepository;
+        this.counterRepository = counterRepository;
         this.authUtil = authUtil;
     }
 
@@ -55,6 +65,19 @@ public class UserService {
         user_entity.setPassword(passwordEncoder.encode(dto.getPassword()));
 
         User saved = userRepository.save(user_entity);
+
+        List<VacationType> vacationTypes = vacationTypeRepository.findAll();
+        for(VacationType vacationType : vacationTypes) {
+            Counter counter = new Counter();
+            counter.setUser(saved);
+            counter.setVacationType(vacationType);
+            counter.setYearly_total(0D);
+            counter.setEstimated(0D);
+            counter.setRequested(0D);
+            counter.setValidated(0D);
+            counter.setRemaining(0D);
+            counterRepository.save(counter);
+        }
 
         return userMapper.toDetail(saved);
     }
